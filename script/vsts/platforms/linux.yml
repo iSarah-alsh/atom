@@ -12,7 +12,7 @@ jobs:
     steps:
       - script: |
           sudo apt-get update
-          sudo apt-get install -y build-essential xvfb clang-3.5 fakeroot git libsecret-1-dev rpm libx11-dev libxkbfile-dev xz-utils xorriso zsync libxss1 libgconf2-4 libgtk-3-0
+          sudo apt-get install -y build-essential ca-certificates xvfb clang-3.5 fakeroot git libsecret-1-dev rpm libx11-dev libxkbfile-dev xz-utils xorriso zsync libxss1 libgconf2-4 libgtk-3-0
         displayName: Install apt dependencies
 
       - script: sudo /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
@@ -38,9 +38,6 @@ jobs:
         env:
           CI: true
           CI_PROVIDER: VSTS
-          CC: clang-3.5
-          CXX: clang++-3.5
-          npm_config_clang: 1
         condition: ne(variables['CacheRestored'], 'true')
 
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
