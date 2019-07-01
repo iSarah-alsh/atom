@@ -2,20 +2,26 @@ jobs:
   - job: Linux
     dependsOn: GetReleaseVersion
     timeoutInMinutes: 180
-
     variables:
       ReleaseVersion: $[ dependencies.GetReleaseVersion.outputs['Version.ReleaseVersion'] ]
     pool:
       # This image is used to host the Docker container that runs the build
       vmImage: ubuntu-16.04
-
     container: ubuntu:trusty
+    env:
+      DISPLAY: :99.0
+      CC: clang
+      CXX: clang++
+      npm_config_clang: 1
 
     steps:
       - script: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libsecret-1-dev fakeroot rpm libx11-dev libxkbfile-dev
+          sudo apt-get install -y build-essential xvfb clang-3.3 fakeroot git libsecret-1-dev rpm libx11-dev libxkbfile-dev xz-utils xorriso zsync libxss1 libgconf2-4 libgtk-3-0
         displayName: Install apt dependencies
+
+      - script: sudo /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
+        displayName: Start Xvfb
 
       - task: NodeTool@0
         inputs:
