@@ -8,11 +8,6 @@ jobs:
       # This image is used to host the Docker container that runs the build
       vmImage: ubuntu-16.04
     container: ubuntu:trusty
-    env:
-      DISPLAY: :99.0
-      CC: clang
-      CXX: clang++
-      npm_config_clang: 1
 
     steps:
       - script: |
@@ -43,6 +38,9 @@ jobs:
         env:
           CI: true
           CI_PROVIDER: VSTS
+          CC: clang
+          CXX: clang++
+          npm_config_clang: 1
         condition: ne(variables['CacheRestored'], 'true')
 
       - task: 1ESLighthouseEng.PipelineArtifactCaching.SaveCacheV1.SaveCache@1
@@ -59,6 +57,9 @@ jobs:
         env:
           GITHUB_TOKEN: $(GITHUB_TOKEN)
           ATOM_RELEASE_VERSION: $(ReleaseVersion)
+          CC: clang
+          CXX: clang++
+          npm_config_clang: 1
         displayName: Build Atom
 
       - script: script/test
@@ -67,6 +68,7 @@ jobs:
           CI_PROVIDER: VSTS
           ATOM_JASMINE_REPORTER: list
           TEST_JUNIT_XML_ROOT: $(Common.TestResultsDirectory)/junit
+          DISPLAY: :99.0
         displayName: Run tests
         condition: and(succeeded(), ne(variables['Atom.SkipTests'], 'true'))
 
